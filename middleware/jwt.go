@@ -188,7 +188,11 @@ func JWTWithConfig(config JWTConfig) echo.MiddlewareFunc {
 				if config.ErrorHandlerWithContext != nil {
 					return config.ErrorHandlerWithContext(err, c)
 				}
-				return err
+				return &echo.HTTPError{
+					Code:     ErrJWTMissing.Code,
+					Message:  ErrJWTMissing.Message,
+					Internal: err,
+				}
 			}
 			token := new(jwt.Token)
 			// Issue #647, #656
